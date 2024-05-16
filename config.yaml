@@ -1,0 +1,22 @@
+options:
+  - top
+
+top:
+  - 
+    dir: D:/Wanos/log/loginfo/240514/245/
+    args:
+      - android.hardware.audio.service
+      - media.swcodec oid.media.swcodec/bin/mediaswcodec
+      - com.wanos.media
+    audit: 6
+    dmips: 80
+  - 
+    dir: D:/Wanos/log/loginfo/240514/deepl/
+    args:
+      - android.hardware.audio.service
+      - media.swcodec oid.media.swcodec/bin/mediaswcodec
+      - com.wanos.media
+    audit: 8
+    dmips: 105
+
+meminfo: ...
