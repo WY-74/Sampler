@@ -12,7 +12,7 @@ def load_config(cfg_path: str):
     return cfg
 
 
-def custom_245(datalist: List[int]):
+def custom_245_dmips(datalist: List[int]):
     _min = min(datalist)
     dmin = round(_min / 6 / 100 * 80, 2)
 
@@ -26,6 +26,15 @@ def custom_245(datalist: List[int]):
     return result
 
 
-cfgs = load_config("D:/work/auto-performance/config.yaml")
+def custom_s59(datalist: List[int]):
+    _max = max(datalist)
+    _avg = round(sum(datalist) / len(datalist), 2)
+    print(sorted(datalist))
+
+    result = f"\n\tmax: {_max}\n\tavg: {_avg}"
+    return result
+
+
+cfgs = load_config("./config.yaml")
 for cfg in cfgs:
-    TopCalculator(cfg, custom_245).calculate()
+    TopCalculator(cfg, custom_s59).calculate()
