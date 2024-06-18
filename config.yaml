@@ -1,18 +1,15 @@
 # self.data_map = {"pr": 2, "ni": 3, "virt": 4, "res":5, "shr": 6, "cpu": 8, "mem": 9}
 
 -
-  file_path: D:/work/auto-performance/data/top.txt
+  file_path: &FILEPATH "D:/Wanos/s59/report/240614/bluetooth.txt"
   filter:
-    pid:
-      789
+    pid: 270
   calculate:
     - cpu: custom
+
 -
-  file_path: D:/work/auto-performance/data/cpu_info.log
+  file_path: *FILEPATH
   filter:
-    user:
-      author
+    pid: 480
   calculate:
-    - cpu: max
-    - cpu: min
-    - cpu: avg
+    - cpu: custom

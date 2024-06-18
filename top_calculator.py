@@ -12,10 +12,10 @@ class TopCalculator:
         filter, value = list(self.cfg["filter"].items())[0]
         group = []
         try:
-            with open(self.file_path, encoding="utf-16-le") as file:
-                lines = getattr(self, f"filter_by_{filter}")(file, str(value))
-        except UnicodeDecodeError:
             with open(self.file_path, encoding="utf-8") as file:
+                lines = getattr(self, f"filter_by_{filter}")(file, str(value))
+        except Exception:
+            with open(self.file_path, encoding="utf-16-le") as file:
                 lines = getattr(self, f"filter_by_{filter}")(file, str(value))
 
         for line in lines:
@@ -30,7 +30,6 @@ class TopCalculator:
             line = line.strip()
             if pid in line and line[0].isdigit():
                 lines.append(line)
-
         return lines
 
     def filter_by_user(self, file, user: str):
@@ -53,12 +52,14 @@ class TopCalculator:
 
     def calculate(self):
         print("#" * 20 + f" {self.file_path} " + "#" * 20)
+        print(f"Start with pid {self.cfg['filter']['pid']}")
 
         group = self.get_group_by_filter()
 
         for ocs in self.cfg["calculate"]:
             col, oc = list(ocs.items())[0]
-            datalist = [float(data[self.data_map[col]]) for data in group]
+            datalist = [float(data[self.data_map[col]]) for data in group if "%" not in data[self.data_map[col]]]
+            # print(datalist)
             print(f"We have collected {len(datalist)} pieces of data:")
-            print(f"\t{datalist}\n")
+            # print(f"\t{datalist}\n")
             print(f"\t{oc} of [{col}]: {getattr(self, f'get_{oc}_value')(datalist)}\n")
