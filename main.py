@@ -49,6 +49,7 @@ def custom_deepl(datalist: List[int]):
     return result
 
 
-cfgs = load_config("./config.yaml")
-for cfg in cfgs:
-    TopCalculator(cfg, custom_s59).calculate()
+if __name__ == "__main__":
+    cfgs = load_config("./config.yaml")
+    for cfg in cfgs:
+        TopCalculator(cfg, custom_s59).calculate()
