@@ -12,7 +12,7 @@ def load_config(cfg_path: str):
     return cfg
 
 
-def custom_245(datalist: List[int]):
+def custom_245_dmips(datalist: List[int]):
     _min = min(datalist)
     dmin = round(_min / 6 / 100 * 80, 2)
 

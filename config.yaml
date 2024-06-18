@@ -1,15 +1,14 @@
 # self.data_map = {"pr": 2, "ni": 3, "virt": 4, "res":5, "shr": 6, "cpu": 8, "mem": 9}
 
 -
-  file_path: &FILEPATH "D:/Wanos/s59/report/240614/bluetooth.txt"
+  file_path: &FILEPATH D:/Wanos/s59/report/240614/bluetooth.txt
   filter:
-    pid: 270
-  calculate:
+    pid: 789
+  calculate: &CALCULATE
     - cpu: custom
 
 -
   file_path: *FILEPATH
   filter:
-    pid: 480
-  calculate:
-    - cpu: custom
+    pid: 789
+  calculate: *CALCULATE
