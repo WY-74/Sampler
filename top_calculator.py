@@ -30,10 +30,11 @@ class TopCalculator:
         # print(f"Start with pid {self.cfg['filter']['pid']}")
 
         group = self.get_group_by_pid()
+        print(group)
 
-        for ocs in self.cfg["calculate"]:
-            col, oc = list(ocs.items())[0]
-            datalist = [float(data[self.data_map[col]]) for data in group if "%" not in data[self.data_map[col]]]
+        # for ocs in self.cfg["calculate"]:
+        #     col, oc = list(ocs.items())[0]
+        #     datalist = [float(data[self.data_map[col]]) for data in group if "%" not in data[self.data_map[col]]]
             # # print(datalist)
             # print(f"We have collected {len(datalist)} pieces of data:")
             # # print(f"\t{datalist}\n")
