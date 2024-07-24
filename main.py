@@ -1,6 +1,7 @@
 import yaml
 from typing import List
 from top_calculator import TopCalculator
+from utils import vaild_data, get_dmips
 
 
 def load_config(cfg_path: str):
@@ -12,22 +13,17 @@ def load_config(cfg_path: str):
     return cfg
 
 
-def custom_245_dmips(datalist: List[int]):
-    _min = min(datalist)
-    dmin = round(_min / 6 / 100 * 80, 2)
-
-    _max = max(datalist)
-    dmax = round(_max / 6 / 100 * 80, 2)
-
+def custom_dmips(datalist: List[float]):
+    _max, _min, datalist = vaild_data(datalist)
     _avg = round(sum(datalist) / len(datalist), 2)
-    davg = round(_avg / 6 / 100 * 80, 2)
 
+    dmax, dmin, davg = get_dmips([_max, _min, _avg], cpus=6, power=80)  # e245
+    dmax, dmin, davg = get_dmips([_max, _min, _avg], cpus=6, power=80)  # e245
     result = f"\n\t\tmin: {_min}({dmin})\n\t\tmax: {_max}({dmax})\n\t\tavg: {_avg}({davg})"
-    return result
 
 
-def custom_s59(datalist: List[int]):
-    _max = max(datalist)
+def custom_dongfeng(datalist: List[int]):
+    _max, _, datalist = vaild_data(datalist)
     _avg = round(sum(datalist) / len(datalist), 2)
     print(sorted(datalist))
 
@@ -35,20 +31,6 @@ def custom_s59(datalist: List[int]):
     return result
 
 
-def custom_deepl(datalist: List[int]):
-    _min = min(datalist)
-    dmin = round(_min / 8 / 100 * 105, 2)
-
-    _max = max(datalist)
-    dmax = round(_max / 8 / 100 * 105, 2)
-
-    _avg = round(sum(datalist) / len(datalist), 2)
-    davg = round(_avg / 8 / 100 * 105, 2)
-
-    result = f"\n\t\tmin: {_min}({dmin})\n\t\tmax: {_max}({dmax})\n\t\tavg: {_avg}({davg})"
-    return result
-
-
 cfgs = load_config("./config.yaml")
 for cfg in cfgs:
-    TopCalculator(cfg, custom_s59).calculate()
+    TopCalculator(cfg, custom_dongfeng).calculate()
