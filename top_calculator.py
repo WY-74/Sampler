@@ -41,15 +41,6 @@ class TopCalculator:
 
         return lines
 
-    def get_max_value(self, datalist: List[int]):
-        return round(max(datalist), 2)
-
-    def get_min_value(self, datalist: List[int]):
-        return round(min(datalist), 2)
-
-    def get_avg_value(self, datalist: List[int]):
-        return round(sum(datalist) / len(datalist), 2)
-
     def calculate(self):
         print("#" * 20 + f" {self.file_path} " + "#" * 20)
         print(f"Start with pid {self.cfg['filter']['pid']}")
@@ -59,7 +50,6 @@ class TopCalculator:
         for ocs in self.cfg["calculate"]:
             col, oc = list(ocs.items())[0]
             datalist = [float(data[self.data_map[col]]) for data in group if "%" not in data[self.data_map[col]]]
-            # print(datalist)
+
             print(f"We have collected {len(datalist)} pieces of data:")
-            # print(f"\t{datalist}\n")
-            print(f"\t{oc} of [{col}]: {getattr(self, f'get_{oc}_value')(datalist)}\n")
+            print(f"\t{oc} of [{col}]: {self.get_custom_value(datalist)}\n")
