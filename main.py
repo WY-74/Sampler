@@ -18,8 +18,10 @@ def custom_dmips(datalist: List[float]):
     _avg = round(sum(datalist) / len(datalist), 2)
 
     dmax, dmin, davg = get_dmips([_max, _min, _avg], cpus=6, power=80)  # e245
-    dmax, dmin, davg = get_dmips([_max, _min, _avg], cpus=6, power=80)  # e245
+
     result = f"\n\t\tmin: {_min}({dmin})\n\t\tmax: {_max}({dmax})\n\t\tavg: {_avg}({davg})"
+
+    return result
 
 
 def custom_dongfeng(datalist: List[int]):
@@ -33,4 +35,4 @@ def custom_dongfeng(datalist: List[int]):
 
 cfgs = load_config("./config.yaml")
 for cfg in cfgs:
-    TopCalculator(cfg, custom_dongfeng).calculate()
+    TopCalculator(cfg, custom_dmips).calculate()
