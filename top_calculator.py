@@ -8,44 +8,27 @@ class TopCalculator:
         self.file_path = self.cfg["file_path"]
         self.get_custom_value = custom_calculator
 
-    def get_group_by_filter(self):
-        filter, value = list(self.cfg["filter"].items())[0]
-        group = []
+    def get_group_by_pid(self):
+        def filter(encoding: str = "utf-8"):
+            with open(self.file_path, encoding=encoding) as file:
+                for line in file:
+                    _line = [l.strip() for l in line.split(" ") if l]
+                    if _line[0].isdigit() and _line[0] in group:
+                        group[_line[0]].append(_line)
+
+        group = {pid.strip(): [] for pid in self.cfg["pid"].split(",")}
         try:
-            with open(self.file_path, encoding="utf-8") as file:
-                lines = getattr(self, f"filter_by_{filter}")(file, str(value))
-        except Exception:
-            with open(self.file_path, encoding="utf-16-le") as file:
-                lines = getattr(self, f"filter_by_{filter}")(file, str(value))
-
-        for line in lines:
-            line = [l for l in line.split(" ") if l]
-            group.append(line)
-
+            filter()
+        except:
+            filter("utf-16-le")
         return group
-
-    def filter_by_pid(self, file, pid: str):
-        lines = []
-        for line in file:
-            line = line.strip()
-            if pid in line and line[0].isdigit():
-                lines.append(line)
-        return lines
-
-    def filter_by_user(self, file, user: str):
-        lines = []
-        for line in file:
-            line = line.strip()
-            if line and line.split(" ")[1] == user:
-                lines.append(line)
-
-        return lines
 
     def calculate(self):
         print("#" * 20 + f" {self.file_path} " + "#" * 20)
-        print(f"Start with pid {self.cfg['filter']['pid']}")
+        # print(f"Start with pid {self.cfg['filter']['pid']}")
 
-        group = self.get_group_by_filter()
+        group = self.get_group_by_pid()
+        print(group)
 
         for ocs in self.cfg["calculate"]:
             col, oc = list(ocs.items())[0]

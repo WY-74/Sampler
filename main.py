@@ -33,6 +33,7 @@ def custom_dongfeng(datalist: List[int]):
     return result
 
 
-cfgs = load_config("./config.yaml")
-for cfg in cfgs:
-    TopCalculator(cfg, custom_dmips).calculate()
+if __name__ == "__main__":
+    cfgs = load_config("./config.yaml")
+    for cfg in cfgs:
+        TopCalculator(cfg, custom_dmips).calculate()
