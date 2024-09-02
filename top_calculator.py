@@ -22,8 +22,6 @@ class TopCalculator:
         except:
             filter("utf-16-le")
         return group
-    
-    
 
     def calculate(self):
         print("#" * 20 + f" {self.file_path} " + "#" * 20)
@@ -32,10 +30,9 @@ class TopCalculator:
         group = self.get_group_by_pid()
         print(group)
 
-        # for ocs in self.cfg["calculate"]:
-        #     col, oc = list(ocs.items())[0]
-        #     datalist = [float(data[self.data_map[col]]) for data in group if "%" not in data[self.data_map[col]]]
-            # # print(datalist)
-            # print(f"We have collected {len(datalist)} pieces of data:")
-            # # print(f"\t{datalist}\n")
-            # print(f"\t{oc} of [{col}]: {getattr(self, f'get_{oc}_value')(datalist)}\n")
+        for ocs in self.cfg["calculate"]:
+            col, oc = list(ocs.items())[0]
+            datalist = [float(data[self.data_map[col]]) for data in group if "%" not in data[self.data_map[col]]]
+
+            print(f"We have collected {len(datalist)} pieces of data:")
+            print(f"\t{oc} of [{col}]: {self.get_custom_value(datalist)}\n")
