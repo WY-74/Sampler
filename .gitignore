@@ -1,4 +1,3 @@
 **/__pycache__
 .python-version
-config.yaml
-.github
+temp/*
