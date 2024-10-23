@@ -1,20 +1,30 @@
-# TODO：多设备状态下判断及使用
-
-
 import os
+import time
 import subprocess
+import concurrent.futures
 from calculator import Calculator
 
 
 class Cell:
-    def __init__(self, pids: str, delay: int, nums: int, filename: str, cpus: int, power: int):
-        self.pids = pids
-        self.delay = delay
-        self.nums = nums
-        self.filename = filename
-        self.cpus = cpus
-        self.power = power
+    def __init__(self, pids: str, file_name: str, others: str):
+        self.pids, self.detial_ids = self._parse_pids(pids)
+        self.file_name = file_name
+        self.others = others
         self.calculator = Calculator()
+
+    def _parse_pids(self, pids: str):
+        _pids = []
+        _detial_ids = []
+
+        for pid in pids.split(","):
+            if "+" in pid.strip():
+                pid = pid.replace("+", "").strip()
+                _pids.append(pid)
+                _detial_ids.append(pid)
+            else:
+                _pids.append(pid.strip())
+
+        return ",".join(_pids), "".join(_detial_ids)
 
     def verify_connection(self):
         response = str(subprocess.check_output("adb devices", shell=True), encoding="utf-8").split("\r\n")[1:]
@@ -26,12 +36,28 @@ class Cell:
         if not devices:
             raise Exception("请通过 'abd devices' 检查是否有设备在线!")
 
-        print("connection successful")
+        print("connection successful!")
+
+    def subprocess_call(self, command):
+        subprocess.call(command, shell=True)
+        print(time.time_ns())
+        return f"successfully executed[{time.time_ns()}]: {command}"
 
     def collect(self):
-        command = f"adb shell top -p {self.pids} -b -d {self.delay} -n {self.nums} > D:/project/top-calculator/temp/{self.filename}.txt"
-        print(command)
-        subprocess.call(command, shell=True)
+        commands = []
+        commands.append(f"adb shell top -p {self.pids} -b {self.others} > temp/{self.file_name}.txt")
+        if self.detial_ids:
+            commands.append(f"adb shell top -p {self.pids} -b -H {self.others} > temp/{self.file_name}_thread.txt")
+
+            max_workers = len(self.detial_ids) + 1
+            with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+                futures = [executor.submit(self.subprocess_call, command) for command in commands]
+                for future in concurrent.futures.as_completed(futures):
+                    result = future.result()
+                    print(result)
+            return
+        else:
+            self.subprocess_call(commands[0])
 
     def get_result(self):
         groups = {pid: [] for pid in self.pids.split(",")}
