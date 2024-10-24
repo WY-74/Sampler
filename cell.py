@@ -1,9 +1,6 @@
-import os
 import time
 import subprocess
 import concurrent.futures
-
-from calculator import Calculator
 
 
 class Sampler:
@@ -28,7 +25,6 @@ class Sampler:
 
     def _subprocess_call(self, command):
         subprocess.call(command, shell=True)
-        print(time.time_ns())
         return f"successfully executed[{time.time_ns()}]: {command}"
 
     def verify_connection(self):
@@ -51,13 +47,13 @@ class Sampler:
 
             max_workers = len(self.detial_ids) + 1
             with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
-                futures = [executor.submit(self.subprocess_call, command) for command in commands]
+                futures = [executor.submit(self._subprocess_call, command) for command in commands]
                 for future in concurrent.futures.as_completed(futures):
                     result = future.result()
                     print(result)
             return
         else:
-            result = self.subprocess_call(command)
+            result = self._subprocess_call(command)
             print(result)
 
 
