@@ -10,11 +10,10 @@ from cell import Cell
 @click.option('--cpus', type=int, default=6, help='Number of CPUs, default is 6')
 @click.option('--power', type=int, default=80, help='Power level, default is 80')
 def run(pids: str, delay: int, nums: int, filename: str, cpus: int, power: int):
-    print(pids)
-    # cell = Cell(pids, delay, nums, filename, cpus, power)
-    # cell.verify_connection()
-    # cell.collect()
-    # cell.get_result()
+    cell = Cell(pids, delay, nums, filename, cpus, power)
+    cell.verify_connection()
+    cell.collect()
+    cell.get_result()
 
 
 if __name__ == "__main__":
