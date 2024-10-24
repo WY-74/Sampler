@@ -1,8 +1,6 @@
-# TODO：多设备状态下判断及使用
-
-
 import os
 import subprocess
+
 from calculator import Calculator
 
 
@@ -33,7 +31,7 @@ class Cell:
         print(command)
         subprocess.call(command, shell=True)
 
-    def get_result(self):
+    def get_result(self, resort: bool = False):
         groups = {pid: [] for pid in self.pids.split(",")}
 
         with open(os.path.join(os.getcwd(), f"temp\\{self.filename}.txt"), encoding="utf-8") as file:
@@ -46,8 +44,6 @@ class Cell:
                 print(f"##### pid: {pid}, volume: {len(groups[pid])} #####")
                 datalist = []
                 for data in groups[pid]:
-                    if len(data) != 12:
-                        raise Exception(f"数据长度不正确!: {data}")
-                    datalist.append(float(data[-4]))
+                    datalist.append(float(data[8]))
 
-                self.calculator.custom_dmips(datalist, self.cpus, self.power)
+                self.calculator.custom_dmips(datalist, self.cpus, self.power, resort)
