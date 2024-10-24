@@ -16,12 +16,14 @@ class Calculator:
     def _get_dmips(self, datalist: List[float], cpus: int, power: int):
         return [round(data / cpus / 100 * power, 2) for data in datalist]
 
-    def custom_dmips(self, datalist: List[float], cpus: int, power: int):
+    def custom_dmips(self, datalist: List[float], cpus: int, power: int, resort: bool = False):
         _max, _min, datalist = self._vaild_data(datalist)
         _avg = round(sum(datalist) / len(datalist), 2)
 
         dmax, dmin, davg = self._get_dmips([_max, _min, _avg], cpus, power)
 
         result = f"\t\tmin: {_min}({dmin})\n\t\tmax: {_max}({dmax})\n\t\tavg: {_avg}({davg})\n"
+        if resort:
+            datalist.sort()
         print(datalist)
         print(result)
