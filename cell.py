@@ -43,7 +43,9 @@ class Sampler:
         command = f"adb shell top -p {self.pids} -b {self.others} > temp/{self.file_name}.txt"
         if self.detial_ids:
             commands = [command]
-            commands.append(f"adb shell top -p {self.pids} -b -H {self.others} > temp/{self.file_name}_thread.txt")
+            commands.append(
+                f"adb shell top -p {self.detial_ids} -b -H {self.others} > temp/{self.file_name}_thread.txt"
+            )
 
             max_workers = len(self.detial_ids) + 1
             with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
