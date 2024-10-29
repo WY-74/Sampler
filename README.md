@@ -1,5 +1,14 @@
 # TopCalculator
 
+## Getting Started
+依赖库 `pip install click`
+
+数据抓取：
+- 进程 `python sampler.py -p pid1[,pid2] -f {file name} [-o "-d 1 -n 60"]`
+- 进程及其线程 `python sampler.py -p pid1+[,pid2, +pid3] -f {file name} [-o "-d 1 -n 60"]`
+
+数据计算: `python parser.py -f {file_path} [-c {calculators name}]`
+
 ## 整体架构设想
 
 总体分为两个模块：
