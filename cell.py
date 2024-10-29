@@ -21,7 +21,7 @@ class Sampler:
             else:
                 _pids.append(pid.strip())
 
-        return ",".join(_pids), "".join(_detial_ids)
+        return ",".join(_pids), ",".join(_detial_ids)
 
     def _subprocess_call(self, command):
         subprocess.call(command, shell=True)
