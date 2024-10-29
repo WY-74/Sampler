@@ -1,5 +1,5 @@
 import click
-from cell import Sampler
+from cells.sampler_cell import Sampler
 
 
 @click.command()
