@@ -7,7 +7,7 @@
 from typing import List
 
 
-class Dfcpus:
+class DFcpus:
     def _get_effective_cpus(self, cpus: List[float], accept_zero: bool = True):
         if not accept_zero:
             cpus = [x for x in cpus if x != 0]
