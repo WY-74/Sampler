@@ -2,6 +2,7 @@ import yaml
 import time
 import subprocess
 import concurrent.futures
+from typing import Dict, Any
 
 
 class Sampler:
@@ -19,7 +20,7 @@ class Sampler:
         if not devices:
             raise Exception("请通过 'abd devices' 检查是否有设备在线!")
 
-        print("connection successful!")
+        print("设备连接成功!")
 
     def _get_configs(self):
         with open('config.yaml', 'r') as f:
@@ -27,38 +28,24 @@ class Sampler:
 
         return configs["sampler"]
 
-    def _subprocess_call(self, command, times: int = 60, delay: int = 1):
-        path = command.split(">>")[1].strip()
-        if self.configs["cut"]:
-            delimiter = f'{"-" * 50}'
-        else:
-            delimiter = ""
+    def _subprocess_call(self, task: Dict[str, Any]):
+        command = f"{task["command"]["command"]} > {self.configs["settings"]["path"]}/{task["name"]}.txt"
 
-        for _ in range(times):
-            subprocess.call(command, shell=True)
-            subprocess.call(f"echo {delimiter} >> {path}", shell=True)
-            time.sleep(delay)
+        subprocess.call(command, shell=True)
+        time.sleep(0.5)
         return True
 
-    def _get_commands(self):
-        path = self.configs["path"]
-        name = self.configs["name"]
-        tags = self.configs["tags"]
-        commands = self.configs["commands"]
-
-        if len(tags) != len(commands):
-            raise Exception("tags 和 commands 的长度不一致!")
-
-        return [f"{command} >> {path}/{name}_{tags[index]}.txt" for index, command in enumerate(commands)]
+    def settings(self, cfg: Dict[str, Any]):
+        if not cfg["status"]:
+            return False
 
     def run(self):
-        commands = self._get_commands()
-        times = self.configs["times"]
-        delay = self.configs["delay"]
+        tasks = self.configs["tasks"]
+        print(f"共发现 {len(tasks)} 个任务!\n")
+        print(tasks[0])
 
-        max_workers = len(commands) + 1
-        with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
-            futures = [executor.submit(self._subprocess_call, command, times, delay) for command in commands]
+        with concurrent.futures.ThreadPoolExecutor(max_workers=len(tasks) + 1) as executor:
+            futures = [executor.submit(self._subprocess_call, task) for task in tasks]
             for future in concurrent.futures.as_completed(futures):
                 result = future.result()
                 print(result)

@@ -1,12 +1,12 @@
 sampler:
-  path: ./temp
-  name: demo
-  tags:
-    - 'top'
-    - 'meminfo'
-  commands:
-    - 'adb shell "top -p 2272 -b -n 1"'
-    - 'adb shell "dumpsys meminfo 2272"'
-  times: 60
-  delay: 1
-  cut: True
+  settings:
+    path: ./temp
+  tasks:
+    - name: top-cpus
+      command:
+        command: adb shell "top -p 274,831,5576 -b -n 60 -d 1"
+        settings:
+          status: False
+          times: 60
+          delay: 1
+          cut: True
