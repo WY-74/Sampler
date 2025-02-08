@@ -1,0 +1,19 @@
+workspace: C:/Users/wyun2/Desktop/E245/loginfo
+tasks:
+  - task_name: cpus
+    command: adb shell "top -p 2196,1184,1127 -b -n 60 -d 1" > {workspace}/{task_name}.txt
+    times: 1
+    delay: 1
+  - task_name: pss-wanos
+    command: adb shell "dumpsys meminfo 2196" >> {workspace}/{task_name}.txt
+    times: 60
+    delay: 1
+  - task_name: pss-swcodec
+    command: adb shell "dumpsys meminfo 1184" >> {workspace}/{task_name}.txt
+    times: 60
+    delay: 1
+  - task_name: pss-audio
+    command: adb shell "dumpsys meminfo 1127" >> {workspace}/{task_name}.txt
+    times: 60
+    delay: 1
+

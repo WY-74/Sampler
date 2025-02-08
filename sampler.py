@@ -1,54 +1,55 @@
+import re
 import yaml
-import time
 import subprocess
-import concurrent.futures
+from time import sleep
 from typing import Dict, Any
 
 
 class Sampler:
     def __init__(self):
-        self._verify_connection()
-        self.configs = self._get_configs()
+        self.tasks = self._init_tasks()
 
-    def _verify_connection(self):
-        response = str(subprocess.check_output("adb devices", shell=True), encoding="utf-8").split("\r\n")[1:]
-        devices = []
-        for device in response:
-            if device.split("\t")[-1] == "device":
-                devices.append(device.split("\t")[0])
+    def _init_tasks(self):
+        with open('tasks.yaml', 'r', encoding="utf-8") as f:
+            cfg = yaml.safe_load(f)
 
-        if not devices:
-            raise Exception("请通过 'abd devices' 检查是否有设备在线!")
+        tasks = cfg.pop("tasks")  # 删除配置文件内tasks字段，其余字段均为全局配置
+        for task in tasks:
+            task.update(cfg)  # 将全局配置更新到每个task中
+            if self._command(task):
+                continue
 
-        print("设备连接成功!")
+        return tasks
 
-    def _get_configs(self):
-        with open('config.yaml', 'r') as f:
-            configs = yaml.safe_load(f)
+    def _command(self, task: Dict[str, Any]):
+        """
+        替换command中占位符为对应的值
+            task: Dict[str, Any] - 任务字典
+        """
 
-        return configs["sampler"]
+        pattern = r'\{(.*?)\}'
+        matches = re.findall(pattern, task["command"])
 
-    def _subprocess_call(self, task: Dict[str, Any]):
-        command = f"{task["command"]["command"]} > {self.configs["settings"]["path"]}/{task["name"]}.txt"
+        for key in matches:
+            placeholder = '{' + key + '}'
+            task["command"] = task["command"].replace(placeholder, task[key])
 
-        subprocess.call(command, shell=True)
-        time.sleep(0.5)
         return True
 
-    def settings(self, cfg: Dict[str, Any]):
-        if not cfg["status"]:
-            return False
+    def _subprocess_call(self, task: Dict[str, Any]):
+        """
+        通过subprocess调用命令
+            task: Dict[str, Any] - 任务字典
+        """
+        for _ in range(task["times"]):
+            subprocess.call(task["command"], shell=True)
+            sleep(task["delay"])
+
+        print(f"Task <{task['task_name']}> done.")
 
     def run(self):
-        tasks = self.configs["tasks"]
-        print(f"共发现 {len(tasks)} 个任务!\n")
-        print(tasks[0])
-
-        with concurrent.futures.ThreadPoolExecutor(max_workers=len(tasks) + 1) as executor:
-            futures = [executor.submit(self._subprocess_call, task) for task in tasks]
-            for future in concurrent.futures.as_completed(futures):
-                result = future.result()
-                print(result)
+        for task in self.tasks:
+            self._subprocess_call(task)
 
 
 if __name__ == "__main__":
